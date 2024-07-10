@@ -1,0 +1,2 @@
+notifications-utils @ git+https://github.com/alphagov/notifications-utils.git@80.0.1
+requests==2.32.3
