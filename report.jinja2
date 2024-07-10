@@ -62,12 +62,28 @@
             h1, h2, h3, h4, h5, h6 {
                 display: inline-block;
                 font-size: 1em;
+                margin: 0.5em 0;
+            }
+            main {
+                white-space: nowrap;
+            }
+            .language {
+                display: inline-block;
+                width: 400px;
+                white-space: normal;
+                vertical-align: top;
             }
         </style>
     </head>
     <body>
-        {% for section in sections %}
-            {{ section }}
-        {% endfor %}
+        <main>
+            {% for language, sections in languages_and_sections %}
+                <div class="language">
+                    {% for section in sections %}
+                        {{ section }}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </main>
     </body>
 </html>
