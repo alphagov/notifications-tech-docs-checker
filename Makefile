@@ -11,4 +11,4 @@ test:
 
 .PHONY: report
 report:
-	python report.py > report.html
+	python report.py

@@ -1,8 +1,10 @@
 import re
-from jinja2 import Environment, FileSystemLoader
+from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
+from jinja2 import Environment, FileSystemLoader
+
 environment = Environment(loader=FileSystemLoader("./"))
 template = environment.get_template("report.jinja2")
 languages = (
@@ -101,4 +103,4 @@ while not all(finished.values()):
         rows.append(row)
 
 
-print(template.render(rows=rows))
+Path("report.html").write_text(template.render(rows=rows))
