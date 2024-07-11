@@ -27,9 +27,11 @@ def get_sections_for_language(language):
         if not section.strip():
             continue
         section_html = BeautifulSoup(f"<h{section}", "html.parser")
-        heading = section_html.select_one(heading_tags)
+        heading = str(section_html.select_one(heading_tags))
         heading_level = int(str(heading)[2:3])
-        contents = "".join(str(tag) for tag in section_html.select(f":not({heading_tags})"))
+        for heading_in_contents in section_html.select(heading_tags):
+            heading_in_contents.decompose()
+        contents = str(section_html)
         yield heading_level, heading, contents
 
 def get_report_for_section(heading_level, heading, contents):
