@@ -12,3 +12,7 @@ test:
 .PHONY: report
 report:
 	python report.py
+
+.PHONY: preview
+preview: report
+	open index.html

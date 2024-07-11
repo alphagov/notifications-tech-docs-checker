@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <style>
+            body {
+                font-family: system, "Helvetica Neue", Arial, sans-serif;
+                font-size: 15px;
+                background: #eee;
+                padding-top: 0.5em;
+            }
+            .heading-level-1,
+            .heading-level-2,
+            .heading-level-3,
+            .heading-level-4,
+            .heading-level-5,
+            .heading-level-6 {
+                position: relative;
+                font-size: 1em;
+                border-bottom: 4px solid #eee;
+                background: #fff;
+                padding: 0.6em 0 0.6em 0;
+            }
+            .heading-level-1:before,
+            .heading-level-2:before,
+            .heading-level-3:before,
+            .heading-level-4:before,
+            .heading-level-5:before,
+            .heading-level-6:before {
+                position: absolute;
+                top: 0.45em;
+                margin-left: -1.4em;
+                padding-left: 0.6em;
+                font-style: italic;
+                color: #aaa;
+                font-size: 24px
+            }
+            .heading-level-1 {
+                padding-left: 2em;
+            }
+            .heading-level-1:before {
+                content: "1";
+            }
+            .heading-level-2 {
+                padding-left: 3em;
+            }
+            .heading-level-2:before {
+                content: "2";
+            }
+            .heading-level-3 {
+                padding-left: 4em;
+            }
+            .heading-level-3:before {
+                content: "3";
+            }
+            .heading-level-4 {
+                padding-left: 5em;
+            }
+            .heading-level-4:before {
+                content: "4";
+            }
+            .heading-level-5 {
+                padding-left: 6em;
+            }
+            .heading-level-5:before {
+                content: "5";
+            }
+            .heading-level-6 {
+                padding-left: 7em;
+            }
+            .heading-level-6:before {
+                content: "6";
+            }
+            h1, h2, h3, h4, h5, h6 {
+                display: inline-block;
+                font-size: 1em;
+                margin: 0.5em 0;
+                padding-right: 2em;
+                padding-left: 0.6em;
+            }
+            .row {
+                white-space: nowrap;
+            }
+            .language {
+                display: inline-block;
+                width: 400px;
+                white-space: normal;
+                vertical-align: top;
+            }
+            summary {
+                list-style: none;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+            }
+            summary::after {
+                content: "";
+                width: 0;
+                height: 0;
+                border-top: 10px solid #333;
+                border-inline: 7px solid transparent;
+                transition: 0.2s;
+                transform: rotate(-90deg);
+                position: relative;
+                left: -0.5em;
+            }
+            details[open] > summary::after {
+                transform: rotate(0deg);
+            }
+            .directory-link {
+                font-size: 24px;
+                margin-top: 0.6em;
+                display: block;
+                padding-left: 0.6em;
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <h1>GOV.UK Notify tech docs checker</h1>
+            {% for name, report in reports|sort|reverse %}
+                <div class="row">
+                    <a class="directory-link" href="{{ report }}">{{ name }}</a>
+                </div>
+            {% endfor %}
+        </main>
+    </body>
+</html>

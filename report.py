@@ -1,12 +1,16 @@
 import re
 from pathlib import Path
+from datetime import datetime, timezone
 
 import requests
 from bs4 import BeautifulSoup
 from jinja2 import Environment, FileSystemLoader
+from notifications_utils.timezones import utc_string_to_aware_gmt_datetime
+
 
 environment = Environment(loader=FileSystemLoader("./"))
-template = environment.get_template("report.jinja2")
+report_template = environment.get_template("report.jinja2")
+index_template = environment.get_template("index.jinja2")
 languages = (
     "java",
     "net",
@@ -102,5 +106,22 @@ while not all(finished.values()):
     else:
         rows.append(row)
 
+def format_datetime_numeric(date):
+    return f"{format_date_numeric(date)}-at-{format_time_24h(date)}"
 
-Path("report.html").write_text(template.render(rows=rows))
+
+def format_date_numeric(date):
+    return utc_string_to_aware_gmt_datetime(date).strftime("%Y-%m-%d")
+
+
+def format_time_24h(date):
+    return utc_string_to_aware_gmt_datetime(date).strftime("%H%M")
+
+
+now = format_datetime_numeric(datetime.now(timezone.utc).isoformat())
+
+Path(f"reports/{now}.html").write_text(report_template.render(rows=rows))
+
+Path(f"index.html").write_text(index_template.render(reports=[
+    (report.stem.replace("-", " "), f"{report}") for report in Path('reports').glob('*.html')
+]))
