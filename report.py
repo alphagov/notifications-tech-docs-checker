@@ -68,30 +68,37 @@ current_heading_level = 0
 rows = []
 
 while not all(finished.values()):
+
     row = []
+    current_heading_level += 1
+
     for language in languages:
         if current_index[language] >= len(languages_and_sections[language]):
             finished[language] = True
+            continue
+
+        heading_level, _heading, _contents = languages_and_sections[language][current_index[language]]
+        current_heading_level = max(current_heading_level, heading_level)
+
+    for language in languages:
+        if finished[language]:
             row.append("")
             continue
 
         heading_level, heading, contents = languages_and_sections[language][current_index[language]]
 
-        if heading_level >= current_heading_level:
+        if heading_level == current_heading_level:
             row.append(
                 get_report_for_section(heading_level, heading, contents)
             )
             current_index[language] += 1
-
-            if heading_level > current_heading_level:
-                current_heading_level += 1
         else:
             row.append("")
 
     if all(column == "" for column in row):
-        current_heading_level -= 1
-
-    rows.append(row)
+        current_heading_level = 0
+    else:
+        rows.append(row)
 
 
 print(template.render(rows=rows))
