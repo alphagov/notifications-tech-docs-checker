@@ -1,7 +1,4 @@
-<html>
-    <head>
-        <style>
-                        body {
+            body {
                 font-family: system, "Helvetica Neue", Arial, sans-serif;
                 font-size: 15px;
                 background: #eee;
@@ -112,20 +109,3 @@
                 display: block;
                 padding-left: 0.6em;
             }
-        </style>
-    </head>
-    <body>
-        <main>
-            <h1>GOV.UK Notify tech docs checker</h1>
-            
-                <div class="row">
-                    <a class="directory-link" href="reports/2024-07-11-at-1421.html">2024 07 11 at 1421</a>
-                </div>
-            
-                <div class="row">
-                    <a class="directory-link" href="reports/2024-07-11-at-1357.html">2024 07 11 at 1357</a>
-                </div>
-            
-        </main>
-    </body>
-</html>
