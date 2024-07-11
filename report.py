@@ -22,16 +22,17 @@ def get_sections_for_language(language):
 
     main = str(html.select_one("main").decode_contents())
     delimiter = r"\<h"
-    return re.split(delimiter, main, flags=re.I)
-
-def get_report_for_section(section):
-    if not section.strip():
-        return ""
     heading_tags = "h1,h2,h3,h4,h5,h6"
-    section_html = BeautifulSoup(f"<h{section}", "html.parser")
-    heading = section_html.select_one(heading_tags)
-    heading_level = str(heading)[2:3]
-    contents = "".join(str(tag) for tag in section_html.select(f":not({heading_tags})"))
+    for section in re.split(delimiter, main, flags=re.I):
+        if not section.strip():
+            continue
+        section_html = BeautifulSoup(f"<h{section}", "html.parser")
+        heading = section_html.select_one(heading_tags)
+        heading_level = int(str(heading)[2:3])
+        contents = "".join(str(tag) for tag in section_html.select(f":not({heading_tags})"))
+        yield heading_level, heading, contents
+
+def get_report_for_section(heading_level, heading, contents):
     if contents.strip():
         return f"""
             <div class="heading-level-{heading_level}">
@@ -51,14 +52,44 @@ def get_report_for_section(section):
         </div>
     """
 
-
-languages_and_sections = [
-    (
-        language,
-        [get_report_for_section(section) for section in get_sections_for_language(language)],
-    )
+languages_and_sections = {
+    language: list(get_sections_for_language(language))
     for language in languages
-]
+}
+finished = {
+    language: False for language in languages
+}
+current_index = {
+    language: 0 for language in languages
+}
+current_heading_level = 0
+rows = []
+
+while not all(finished.values()):
+    row = []
+    for language in languages:
+        if current_index[language] >= len(languages_and_sections[language]):
+            finished[language] = True
+            row.append("")
+            continue
+
+        heading_level, heading, contents = languages_and_sections[language][current_index[language]]
+
+        if heading_level >= current_heading_level:
+            row.append(
+                get_report_for_section(heading_level, heading, contents)
+            )
+            current_index[language] += 1
+
+            if heading_level > current_heading_level:
+                current_heading_level += 1
+        else:
+            row.append("")
+
+    if all(column == "" for column in row):
+        current_heading_level -= 1
+
+    rows.append(row)
 
 
-print(template.render(languages_and_sections=languages_and_sections))
+print(template.render(rows=rows))
