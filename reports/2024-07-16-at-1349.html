@@ -79,6 +79,11 @@
             .row {
                 white-space: nowrap;
             }
+            .row--first {
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+            }
             .language {
                 display: inline-block;
                 width: 400px;
@@ -120,7 +125,7 @@
         </div>
         <main>
             
-                <div class="row">
+                <div class="row row--first">
                     
                         <div class="language">
                             

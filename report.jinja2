@@ -10,7 +10,7 @@
         </div>
         <main>
             {% for row in rows %}
-                <div class="row">
+                <div class="row{% if loop.first %} row--first{% endif %}">
                     {% for column in row %}
                         <div class="language">
                             {{ column }}
