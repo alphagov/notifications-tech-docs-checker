@@ -1,12 +1,11 @@
 import re
+from datetime import UTC, datetime
 from pathlib import Path
-from datetime import datetime, timezone
 
 import requests
 from bs4 import BeautifulSoup
 from jinja2 import Environment, FileSystemLoader
 from notifications_utils.timezones import utc_string_to_aware_gmt_datetime
-
 
 environment = Environment(loader=FileSystemLoader("./"))
 report_template = environment.get_template("report.jinja2")
@@ -20,6 +19,7 @@ languages = (
     "ruby",
     "rest-api",
 )
+
 
 def get_sections_for_language(language):
     page = requests.get(f"https://docs.notifications.service.gov.uk/{language}.html")
@@ -39,6 +39,7 @@ def get_sections_for_language(language):
             heading_in_contents.decompose()
         contents = str(section_html)
         yield heading_level, heading, contents
+
 
 def get_report_for_section(heading_level, heading, contents):
     if contents.strip():
@@ -60,21 +61,14 @@ def get_report_for_section(heading_level, heading, contents):
         </div>
     """
 
-languages_and_sections = {
-    language: list(get_sections_for_language(language))
-    for language in languages
-}
-finished = {
-    language: False for language in languages
-}
-current_index = {
-    language: 0 for language in languages
-}
+
+languages_and_sections = {language: list(get_sections_for_language(language)) for language in languages}
+finished = {language: False for language in languages}
+current_index = {language: 0 for language in languages}
 current_heading_level = 0
 rows = []
 
 while not all(finished.values()):
-
     row = []
     current_heading_level += 1
 
@@ -94,9 +88,7 @@ while not all(finished.values()):
         heading_level, heading, contents = languages_and_sections[language][current_index[language]]
 
         if heading_level == current_heading_level:
-            row.append(
-                get_report_for_section(heading_level, heading, contents)
-            )
+            row.append(get_report_for_section(heading_level, heading, contents))
             current_index[language] += 1
         else:
             row.append("")
@@ -105,6 +97,7 @@ while not all(finished.values()):
         current_heading_level = 0
     else:
         rows.append(row)
+
 
 def format_datetime_numeric(date):
     return f"{format_date_numeric(date)}-at-{format_time_24h(date)}"
@@ -118,10 +111,12 @@ def format_time_24h(date):
     return utc_string_to_aware_gmt_datetime(date).strftime("%H%M")
 
 
-now = format_datetime_numeric(datetime.now(timezone.utc).isoformat())
+now = format_datetime_numeric(datetime.now(UTC).isoformat())
 
 Path(f"reports/{now}.html").write_text(report_template.render(rows=rows))
 
-Path(f"index.html").write_text(index_template.render(reports=[
-    (report.stem.replace("-", " "), f"{report}") for report in Path('reports').glob('*.html')
-]))
+Path("index.html").write_text(
+    index_template.render(
+        reports=[(report.stem.replace("-", " "), f"{report}") for report in Path("reports").glob("*.html")]
+    )
+)

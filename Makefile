@@ -7,7 +7,7 @@ bootstrap:
 .PHONY: test
 test:
 	ruff check .
-	black --check .
+	ruff format --check .
 
 .PHONY: report
 report:
